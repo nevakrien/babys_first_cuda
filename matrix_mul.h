@@ -30,5 +30,6 @@ int readTransposedMatrix(FILE *file,  transposed_matrix *out);
 int writeTransposedMatrix(FILE *file,  transposed_matrix *in);
 matrix matrixMul(matrix a,matrix b);
 bool compareMatrices(matrix m1, matrix m2);
+float distHeuristic(matrix m1, matrix m2);
 
 #endif /* MATRIX_MUL_H */

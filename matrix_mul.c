@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "matrix_mul.h"
+#include <math.h>
 
 // typedef struct matrix {
 //     float *data;
@@ -145,4 +146,38 @@ bool compareMatrices(matrix m1, matrix m2){
 	}
 
 	return true;
+}
+
+static double computeNorm(const matrix m) {
+    double norm = 0.0;
+    int size = m.rows * m.cols;
+    for (int i = 0; i < size; i++) {
+        norm += m.data[i] * m.data[i];
+    }
+    return sqrt(norm);
+}
+
+float distHeuristic(matrix m1, matrix m2) {
+    if (m1.cols != m2.cols || m1.rows != m2.rows) {
+        return INFINITY; // Indicate dimension mismatch
+    }
+
+    int size = m1.rows * m1.cols;
+    double diffNorm = 0.0;
+
+    for (int i = 0; i < size; i++) {
+        double diff = m1.data[i] - m2.data[i];
+        diffNorm += diff * diff;
+    }
+
+    diffNorm = sqrt(diffNorm);
+    double norm1 = computeNorm(m1);
+    double norm2 = computeNorm(m2);
+
+    if (norm1 == 0 && norm2 == 0) return 0; // Both matrices are zero matrices
+
+    double sumOfNorms = norm1 + norm2;
+    if (sumOfNorms == 0) return INFINITY; // Avoid division by zero
+
+    return diffNorm / sumOfNorms;
 }
