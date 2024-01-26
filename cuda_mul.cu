@@ -109,7 +109,7 @@ int main(){
         }
 
         y=matrixMulCuda(a,b);
-        if(distHeuristic(y,ans)>0.05){
+        if(distHeuristic(y,ans)<0.05){
             printf("\nWrong Data\n");
             cudaError_t err=cudaGetLastError();
             if (err != cudaSuccess) {

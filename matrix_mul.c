@@ -174,10 +174,10 @@ float distHeuristic(matrix m1, matrix m2) {
     double norm1 = computeNorm(m1);
     double norm2 = computeNorm(m2);
 
-    if (norm1 == 0 && norm2 == 0) return 0; // Both matrices are zero matrices
+    //if (norm1 == 0 && norm2 == 0) return 0; // Both matrices are zero matrices
 
     double sumOfNorms = norm1 + norm2;
-    if (sumOfNorms == 0) return INFINITY; // Avoid division by zero
+    if (sumOfNorms == 0) return 0; // only happens when both are the zero matriz
 
     return diffNorm / sumOfNorms;
 }
