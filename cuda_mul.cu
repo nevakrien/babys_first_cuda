@@ -5,10 +5,12 @@ extern "C" {
 #include <stdlib.h>
 
 #define CAP_SIZE 100
-
 /* 
 I set for 3 hours+ on this code because I forgot floats are weird
 for the love of god remember to check for margin and not perfection
+
+I then spend 10 minutes stressed if I got the right sign on the comperison...
+did 3 commits ahhhh.
 
 previous dispair:
 
@@ -19,8 +21,8 @@ I then started being very paranoid about syncing. then I ran a sanitizer
 and also did other checks... nothing.
 */
 __global__ void regularMatrixMul(matrix a,matrix b,matrix ans) {
-    int row = blockIdx.x;//over simplefied on purpose //* blockDim.y + threadIdx.y;
-    int col = blockIdx.y;//over simplefied on purpose //* blockDim.x + threadIdx.x;
+    int row = blockIdx.x* blockDim.x + threadIdx.x;
+    int col = blockIdx.y* blockDim.y + threadIdx.y;
 
     if (row < ans.rows && col < ans.cols) {
         for (int k = 0; k < a.cols; k++) {
@@ -52,11 +54,13 @@ matrix matrixMulCuda(matrix a,matrix b){
     a.data=device_a;
     b.data=device_b;
     matrix ans=(matrix){device_ans,a.rows,b.cols};
+    
+    constexpr int x=16;
+    constexpr int y=16;
 
-    //run
-    cudaDeviceSynchronize(); //yet another needless sync in a desprate attempt to fix this code
-    dim3 numBlocks(ans.rows,ans.cols,1);
-    regularMatrixMul<<<numBlocks,1>>>(a,b,ans); //yes I know I need threads getting to it
+    dim3 numThreads(x,y,1);
+    dim3 numBlocks((ans.rows+x-1)/x,(ans.cols+x-1)/x,1);
+    regularMatrixMul<<<numBlocks,numThreads>>>(a,b,ans); //yes I know I need threads getting to it
 
     //collecting
     float * host_ans =(float *)malloc(ans_size * sizeof(float));
@@ -64,8 +68,6 @@ matrix matrixMulCuda(matrix a,matrix b){
         return {NULL,0,0};
     }
 
-    
-    cudaDeviceSynchronize(); //first paranoia driven needles sync
     cudaError_t err = cudaMemcpy(host_ans, device_ans, ans_size * sizeof(float), cudaMemcpyDeviceToHost);
     if (err != cudaSuccess) {
         // Handle the error, for example, print the CUDA error string
