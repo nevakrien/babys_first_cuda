@@ -18,6 +18,32 @@ void deleteMatrix(matrix m) {
     free(m.data);
 }
 
+
+void testRead(int rows, int cols) {
+    printf("Testing ReadVsOriginal with %dx%d matrix...\n", rows, cols);
+    matrix original = createRandomMatrix(rows, cols);
+    matrix ans;
+
+    FILE *file = fopen("temp_matrix.bin", "w");
+    writeMatrix(file, &original);
+    fclose(file);
+
+    file = fopen("temp_matrix.bin", "r");
+    readMatrix(file, &ans);
+    fclose(file);
+
+    if (compareMatrices(ans, original)) {
+        printf("regular read passed\n");
+    } else {
+        printf("regular read failed\n");
+    }
+
+    deleteMatrix(original);
+    free(ans.data);
+    remove("temp_matrix.bin");
+}
+
+
 void testReadVsOriginal(int rows, int cols) {
     printf("Testing ReadVsOriginal with %dx%d matrix...\n", rows, cols);
     matrix original = createRandomMatrix(rows, cols);
@@ -115,6 +141,8 @@ void testReadVsWriteTransposed(int rows, int cols) {
 
 int main() {
     srand(time(NULL)); 
+
+    testRead(100,103);
 
     // Test with 5x5 matrix
     testReadVsOriginal(5, 5);
