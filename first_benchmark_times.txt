@@ -1,3 +1,11 @@
+cuda_mul
+Multiplying matrix pair 100
+
+real	0m0.450s
+user	0m0.272s
+sys	0m0.176s
+
+FIRST BENCHMARK
 first omp
 Multiplying matrix pair 100
 real	0m25.325s
@@ -48,5 +56,7 @@ Multiplying matrix pair 100
 real	0m23.014s
 user	0m22.872s
 sys	0m0.140s
-(base) user@user-System-Product-Name:~/Desktop/c_stuff/babys_first_cuda$ 
+
+
+
 
