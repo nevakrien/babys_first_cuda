@@ -1,0 +1,26 @@
+first omp
+Multiplying matrix pair 100
+real	0m25.325s
+user	0m25.180s
+sys	0m0.144s
+
+baseline
+Multiplying matrix pair 100
+real	0m25.179s
+user	0m25.090s
+sys	0m0.088s
+
+transpose
+Multiplying matrix pair 100
+
+real	0m22.812s
+user	0m22.683s
+sys	0m0.128s
+
+transpose omp
+Multiplying matrix pair 100
+
+real	0m22.804s
+user	0m22.683s
+sys	0m0.120s
+

@@ -46,7 +46,7 @@ int writeMatrix(FILE *file,  matrix *in) {
     return 0;
 }
 
-// Writes a transposed matrix to a file, transposing it.
+// Writes a matrix to a file, transposing it.
 int writeTransposedMatrix(FILE *file, transposed_matrix *in) {
     if (fwrite(&(in->cols), sizeof(int), 1, file) != 1) { // Swapping for file
         return 1; 
@@ -55,15 +55,15 @@ int writeTransposedMatrix(FILE *file, transposed_matrix *in) {
         return 2;
     }
 
-    // Write elements in row-major order
-    for (int r = 0; r < in->rows; r++) {
-        for (int c = 0; c < in->cols; c++) {
-            float val = in->data[c * in->rows + r];
-            if (fwrite(&val, sizeof(float), 1, file) != 1) {
-                return 3;
-            }
-        }
-    }
+    // Write elements in column-major order
+    for (int c = 0; c < in->cols; c++) {
+	    for (int r = 0; r < in->rows; r++) {
+	        float val = in->data[r * in->cols + c];
+	        if (fwrite(&val, sizeof(float), 1, file) != 1) {
+	            return 3;
+	        }
+	    }
+	}
 
     return 0;
 }
@@ -86,14 +86,14 @@ int readTransposedMatrix(FILE *file, transposed_matrix *out) {
     }
 
     // Read elements and store in column-major order
-    for (int r = 0; r < rows; r++) {
-        for (int c = 0; c < cols; c++) {
-            if (fread(&(out->data[c * rows + r]), sizeof(float), 1, file) != 1) {
-                free(out->data);
-                return 4;
-            }
-        }
-    }
+	for (int c = 0; c < cols; c++) {
+	    for (int r = 0; r < rows; r++) {
+	        if (fread(&(out->data[r * cols + c]), sizeof(float), 1, file) != 1) {
+	            free(out->data);
+	            return 4;
+	        }
+	    }
+	}
 
     return 0; 
 }
