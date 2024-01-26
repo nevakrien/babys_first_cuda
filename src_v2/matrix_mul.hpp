@@ -32,4 +32,9 @@ matrix matrixMul(matrix a,matrix b);
 //__global__ void regularMatrixMul(matrix a,matrix b,matrix ans);
 float distHeuristic(matrix m1, matrix m2);
 
+//include what we are testing on
+#if defined(TestFunction) && TestFunction == sharedMatrixMul
+#include "caching_tricks.hpp"
+#endif
+
 #endif /* MATRIX_MUL_HPP */

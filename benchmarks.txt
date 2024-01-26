@@ -1,5 +1,3 @@
 TestFunction=matrixMul
 Multiplying matrix pair 1000
-read error
-
-Total multiplication time: 1580.097656 milliseconds
+Total multiplication time: 1582.018677 milliseconds

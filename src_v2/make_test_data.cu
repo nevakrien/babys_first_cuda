@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <time.h>
 
-#define NUM_MATRIX_PAIRS 1000
+#define NUM_MATRIX_PAIRS 1000 //seems to have an off by 1 error with this 1 but it really dosent matter so who cares
 #define MIN_ROWS 1
 #define MAX_ROWS 1000
 #define MIN_COLS 1

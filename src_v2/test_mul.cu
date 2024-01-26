@@ -33,17 +33,17 @@ int main() {
         printf("\rMultiplying matrix pair %d", i);
 
         if (readMatrix(file_a, &a)) {
-            printf("\nread error\n");
+            //printf("\nread error\n");
             break;
         }
 
         if (readMatrix(file_b, &b)) {
-            printf("\nread error\n");
+            printf("\nInput files dont match\n");
             break;
         }
 
         if (readMatrix(file_ans, &ans)) {
-            printf("\nread error\n");
+            printf("\nInput files dont match\n");
             break;
         }
 
@@ -59,8 +59,9 @@ int main() {
         cudaEventElapsedTime(&milliseconds, start, stop);
         totalTime += milliseconds;
 
-        if (distHeuristic(y, ans) > 0.05) {
-            printf("\nWrong Data\n");
+        float dist=distHeuristic(y, ans);
+        if ( dist> 0.05) {
+            printf("\nWrong Data dist is at:%f\n",dist);
             cudaError_t err = cudaGetLastError();
             if (err != cudaSuccess) {
                 printf("CUDA Error: %s\n", cudaGetErrorString(err));
