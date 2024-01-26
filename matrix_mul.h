@@ -1,5 +1,5 @@
-#ifndef MATRIX_IO_H
-#define MATRIX_IO_H
+#ifndef MATRIX_MUL_H
+#define MATRIX_MUL_H
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -31,4 +31,4 @@ int writeTransposedMatrix(FILE *file,  transposed_matrix *in);
 matrix matrixMul(matrix a,matrix b);
 bool compareMatrices(matrix m1, matrix m2);
 
-#endif /* MATRIX_IO_H */
+#endif /* MATRIX_MUL_H */
