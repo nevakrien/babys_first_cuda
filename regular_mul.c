@@ -20,7 +20,7 @@ int main(){
 			break;
 		}
 
-		if(readTransposedMatrix(file_b,&b)){
+		if(readMatrix(file_b,&b)){
 			break;
 		}
 

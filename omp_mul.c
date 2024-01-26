@@ -63,8 +63,6 @@ matrix matrixMulTransposed(matrix a, transposed_matrix b) {
 }
 
 matrix matrixMulTransposedOMP(matrix a, transposed_matrix b) {
-    // Corrected check: Ensure a.cols (n) matches b.cols (n), 
-    // as b.cols is the number of columns of the original B (which should match a.cols)
     if (a.cols != b.cols) {
         printf("Shape error: a.cols=%d, b.cols=%d, a.rows=%d, b.rows=%d\n", a.cols, b.cols, a.rows, b.rows);
         return (matrix){NULL, -1, -1};
@@ -83,9 +81,14 @@ matrix matrixMulTransposedOMP(matrix a, transposed_matrix b) {
     #pragma omp parallel for schedule(dynamic)
     for (int i = 0; i < ans.rows; i++) {     // Iterate over rows of 'a' (m)
         for (int j = 0; j < ans.cols; j++) { // Iterate over cols of 'b' (p)
-            for (int k = 0; k < a.cols; k++) { // Iterate over cols of 'a' and rows of 'b' (n)
-                #pragma omp critical
-                ans.data[i * ans.cols + j] += a.data[i * a.cols + k] * b.data[j * b.cols + k];
+            
+            //big critical block is here so that we have more cach locality since everything within the block would never be a cach hit with itself
+            #pragma omp critical
+            {
+                for (int k = 0; k < a.cols; k++) { // Iterate over cols of 'a' and rows of 'b' (n)
+                    //#pragma omp critical
+                    ans.data[i * ans.cols + j] += a.data[i * a.cols + k] * b.data[j * b.cols + k];
+                }
             }
         }
     }
@@ -122,7 +125,7 @@ int main(){
 			break;
 		}
 
-		y=matrixMulTransposed(a,b);
+		y=matrixMulTransposedOMP(a,b);
 		if(!compareMatrices(y,ans)){
 			printf("Wrong Data\n");
 			return 1;

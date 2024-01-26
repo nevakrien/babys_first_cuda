@@ -24,3 +24,29 @@ real	0m22.804s
 user	0m22.683s
 sys	0m0.120s
 
+
+
+LATER BENCHMARK TRANSPOSE
+
+omp big block
+Multiplying matrix pair 100
+
+real	0m22.885s
+user	0m22.723s
+sys	0m0.160s
+
+no omp
+Multiplying matrix pair 100
+
+real	0m23.097s
+user	0m22.987s
+sys	0m0.108s
+
+omp small block
+Multiplying matrix pair 100
+
+real	0m23.014s
+user	0m22.872s
+sys	0m0.140s
+(base) user@user-System-Product-Name:~/Desktop/c_stuff/babys_first_cuda$ 
+
