@@ -9,7 +9,7 @@ static __global__ void sharedMatrixMulKernal(matrix a, matrix b, matrix ans, siz
     extern __shared__ float sharedA[];
 
     // Calculate the part of the matrix each thread is responsible for
-    int part = (a.cols + blockDim.x - 1) / blockDim.x; 
+    int part = (a.rows + blockDim.x - 1) / blockDim.x; 
     int start = part * threadIdx.x;
     int end = min(start + part, a.cols);
 
@@ -17,10 +17,10 @@ static __global__ void sharedMatrixMulKernal(matrix a, matrix b, matrix ans, siz
     if(threadIdx.y==0){
         for (int i = start; i < end; i++) {
             for (int j = 0; j < a.rows; j++) {
-                int sharedIndex = (i - start) * a.rows + j;
-                int globalIndex = i * a.rows + j;
+                int sharedIndex = (i - start) * a.cols + j;
+                int globalIndex = i * a.cols + j;
                 if (sharedIndex < blockDim.x * a.cols && globalIndex < a.cols * a.rows) {
-                    sharedA[sharedIndex] = a.data[globalIndex];
+                    sharedA[sharedIndex] = a.data[globalIndex]; //error is likely here
                 }
             }
         }
@@ -33,6 +33,8 @@ static __global__ void sharedMatrixMulKernal(matrix a, matrix b, matrix ans, siz
             ans.data[row * ans.cols + col] += sharedA[threadIdx.x * a.cols + k] * b.data[k * b.cols + col];
         }
     }
+    //just checking
+    __syncthreads();
 }
 
 matrix sharedMatrixMul(matrix a,matrix b){
