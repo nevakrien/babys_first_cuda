@@ -1,3 +1,8 @@
 TestFunction=matrixMul
 Multiplying matrix pair 1000
 Total multiplication time: 1582.018677 milliseconds
+
+TestFunction=sharedMatrixMul
+Multiplying matrix pair 1000
+Total multiplication time: 1714.929810 milliseconds
+

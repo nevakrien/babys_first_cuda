@@ -2,27 +2,28 @@
 #include <iostream>
 //too confusing dont include #include "matrix_mul.hpp"//order matters this checks for the other header
 
-static __global__ void sharedMatrixMulKernal(matrix a, matrix b, matrix ans, size_t sharedMemorySize) {
+/*I worked on this kernal a lot specifcly with the memory loading (took around 5 hours...) 
+GPT4 came in cluch after a while whe I decided we better make it a SINGLE for loop.
+this makes reasoning about stuff much easier. 
+
+all of this work for cach locality tho seems to be in vain since in the end this is slower.
+*/
+static __global__ void sharedMatrixMulKernal(matrix a, matrix b, matrix ans) {
     int row = blockIdx.x * blockDim.x + threadIdx.x;
     int col = blockIdx.y * blockDim.y + threadIdx.y;
 
     extern __shared__ float sharedA[];
 
-    // Calculate the part of the matrix each thread is responsible for
-    int part = (a.rows + blockDim.x - 1) / blockDim.x; 
-    int start = part * threadIdx.x;
-    int end = min(start + part, a.cols);
+    // Total elements in the submatrix of 'a' to load into shared memory
+    int totalElements = blockDim.x * a.cols;
 
-    // Load elements into shared memory
-    if(threadIdx.y==0){
-        for (int i = start; i < end; i++) {
-            for (int j = 0; j < a.rows; j++) {
-                int sharedIndex = (i - start) * a.cols + j;
-                int globalIndex = i * a.cols + j;
-                if (sharedIndex < blockDim.x * a.cols && globalIndex < a.cols * a.rows) {
-                    sharedA[sharedIndex] = a.data[globalIndex]; //error is likely here
-                }
-            }
+    // Each thread loads one or more elements into shared memory
+    for (int idx = threadIdx.x + threadIdx.y * blockDim.x; idx < totalElements; idx += blockDim.x * blockDim.y) {
+        int sharedRow = idx / a.cols;
+        int sharedCol = idx % a.cols;
+        int globalRow = blockIdx.x * blockDim.x + sharedRow;
+        if (globalRow < a.rows && sharedCol < a.cols) {
+            sharedA[idx] = a.data[globalRow * a.cols + sharedCol];
         }
     }
     __syncthreads();
@@ -33,8 +34,6 @@ static __global__ void sharedMatrixMulKernal(matrix a, matrix b, matrix ans, siz
             ans.data[row * ans.cols + col] += sharedA[threadIdx.x * a.cols + k] * b.data[k * b.cols + col];
         }
     }
-    //just checking
-    __syncthreads();
 }
 
 matrix sharedMatrixMul(matrix a,matrix b){
@@ -75,8 +74,7 @@ matrix sharedMatrixMul(matrix a,matrix b){
     if (sharedMemSize > 48 * 1024) {
         cudaFuncSetAttribute(sharedMatrixMulKernal, cudaFuncAttributeMaxDynamicSharedMemorySize, sharedMemSize);
     }
-    sharedMatrixMulKernal<<<numBlocks,numThreads,sharedMemSize>>>(a,b,ans,sharedMemSize); //yes I know I need threads getting to it
-
+    sharedMatrixMulKernal<<<numBlocks,numThreads,sharedMemSize>>>(a,b,ans); 
     //collecting
     float * host_ans =(float *)malloc(ans_size * sizeof(float));
     if (!host_ans){
