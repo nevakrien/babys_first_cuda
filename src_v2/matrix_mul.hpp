@@ -37,4 +37,8 @@ float distHeuristic(matrix m1, matrix m2);
 #include "caching_tricks.hpp"
 #endif
 
+#if defined(TestFunction) && TestFunction == preMatrixMul
+#include "shared_pre.hpp"
+#endif
+
 #endif /* MATRIX_MUL_HPP */

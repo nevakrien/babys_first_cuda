@@ -6,7 +6,7 @@
 GPT4 came in cluch after a while whe I decided we better make it a SINGLE for loop.
 this makes reasoning about stuff much easier. 
 
-all of this work for cach locality tho seems to be in vain since in the end this is slower.
+all of this work for cach locality tho seems to be in vain since in the end this is slower
 */
 static __global__ void sharedMatrixMulKernal(matrix a, matrix b, matrix ans) {
     int row = blockIdx.x * blockDim.x + threadIdx.x;
