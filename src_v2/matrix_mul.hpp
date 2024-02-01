@@ -41,4 +41,8 @@ float distHeuristic(matrix m1, matrix m2);
 #include "shared_pre.hpp"
 #endif
 
+#if defined(TestFunction) && TestFunction == noLoopMatrixMul
+#include "no_loop.hpp"
+#endif
+
 #endif /* MATRIX_MUL_HPP */

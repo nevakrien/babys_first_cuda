@@ -10,4 +10,4 @@ after I got it working I moved everything to v1 and am now working on optimizing
 
 # builds
 nvcc src_v2/test_mul.cu matrix_mul.o
-nvcc src_v2/test_mul.cu matrix_mul.o caching_tricks.o -D TestFunction=sharedMatrixMul
+nvcc src_v2/test_mul.cu matrix_mul.o caching_tricks.o -DTestFunction=sharedMatrixMul
